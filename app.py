@@ -8,7 +8,7 @@ import numpy as np
 # Load the dataset from a GitHub URL or from the local file if using locally
 @st.cache_data
 def load_data():
-    url = "https://raw.githubusercontent.com/gauthamgtg/Used-Car-Price-Predictor/main/PakWheel%20used%20Car%20Data.csv"
+    url = "https://raw.githubusercontent.com/yourusername/yourrepo/main/PakWheel%20used%20Car%20Data.csv"
     car_data = pd.read_csv(url)
     
     # Data Cleaning
@@ -57,10 +57,15 @@ input_data = pd.DataFrame([[engine_displacement, mileage]], columns=['engineDisp
 
 # Add dummy variables for categorical inputs
 for col in X.columns:
-    if f"{col}" in input_data.columns:
-        input_data[col] = 1
-    else:
-        input_data[col] = 0
+    input_data[col] = 0  # Initialize all columns to 0
+    
+# Set the corresponding columns to 1 based on user input
+if f"City_{city}" in input_data.columns:
+    input_data[f"City_{city}"] = 1
+if f"Model_{model_selected}" in input_data.columns:
+    input_data[f"Model_{model_selected}"] = 1
+if f"fuelType_{fuel_type}" in input_data.columns:
+    input_data[f"fuelType_{fuel_type}"] = 1
 
 # Predict the price
 if st.button("Predict Price"):

@@ -8,7 +8,7 @@ import numpy as np
 # Load the dataset from a GitHub URL or from the local file if using locally
 @st.cache_data
 def load_data():
-    url = "https://raw.githubusercontent.com/yourusername/yourrepo/main/PakWheel%20used%20Car%20Data.csv"
+    url = "https://raw.githubusercontent.com/gauthamgtg/Used-Car-Price-Predictor/main/PakWheel%20used%20Car%20Data.csv"
     car_data = pd.read_csv(url)
     
     # Data Cleaning

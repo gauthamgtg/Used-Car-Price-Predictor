@@ -10,7 +10,7 @@ import numpy as np
 def load_data():
     url = "https://raw.githubusercontent.com/gauthamgtg/Used-Car-Price-Predictor/main/PakWheel%20used%20Car%20Data.csv"
     car_data = pd.read_csv(url)
-    
+    car_data = car_data.drop('description', axis=1)
     # Data Cleaning
     car_data['engineDisplacement'] = car_data['engineDisplacement'].str.replace('cc', '').str.strip()
     car_data['engineDisplacement'] = pd.to_numeric(car_data['engineDisplacement'], errors='coerce')

@@ -1,18 +1,13 @@
 import streamlit as st
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+import joblib
 import numpy as np
 
-# Load the dataset from a GitHub URL or from the local file if using locally
+# Load the dataset (with caching to speed up)
 @st.cache_data
 def load_data():
-    url = "https://raw.githubusercontent.com/gauthamgtg/Used-Car-Price-Predictor/main/PakWheel%20used%20Car%20Data.csv"
-    car_data = pd.read_csv(url)
-    car_data = car_data.drop('description', axis=1)
-    car_data = car_data.drop('url', axis=1)
-
+    car_data = pd.read_csv('PakWheel used Car Data.csv')
+    
     # Data Cleaning
     car_data['engineDisplacement'] = car_data['engineDisplacement'].str.replace('cc', '').str.strip()
     car_data['engineDisplacement'] = pd.to_numeric(car_data['engineDisplacement'], errors='coerce')
@@ -28,18 +23,17 @@ def load_data():
     
     return car_data
 
+# Load the pre-trained model (cached for speed)
+@st.cache_resource
+def load_model():
+    return joblib.load('car_price_predictor_model.pkl')
+
+# Load data and model
 car_data = load_data()
+model = load_model()
 
-# Prepare features and target variable
+# Prepare input features
 X = car_data.drop('price', axis=1)
-y = car_data['price']
-
-# Split the data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Train the model
-model = RandomForestRegressor()
-model.fit(X_train, y_train)
 
 # Streamlit App
 st.title("Used Car Price Prediction")
@@ -74,5 +68,3 @@ if st.button("Predict Price"):
     predicted_price = model.predict(input_data)[0]
     st.subheader(f"Estimated Price: {predicted_price:,.2f}")
 
-# Model performance
-st.write(f"Model Mean Squared Error: {mean_squared_error(y_test, model.predict(X_test)):.2f}")
